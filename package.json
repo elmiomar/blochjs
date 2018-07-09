@@ -1,0 +1,20 @@
+{
+  "name": "blockchain",
+  "version": "1.0.0",
+  "description": "My first blockchain in JavaScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "blockchain",
+    "bitcoin",
+    "cryptocurrency",
+    "javascript"
+  ],
+  "author": "Omar Ilias EL MIMOUNI",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "sha256": "^0.2.0"
+  }
+}
