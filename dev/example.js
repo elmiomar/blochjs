@@ -1,21 +1,22 @@
-const Blockchain = require('./blockchain');
+import Blockchain from './blockchain';
 
 const litecoin = new Blockchain();
 
 // create first block
-litecoin.createNewBlock(1234,'fasdrftasdtfuyatdfa2', '5asdr6tasd8duy3tdfau');
+litecoin.createNewBlock(1234, '2AAE6C35C94FCFB415DBE95F408B9CE91EE846ED', '6E71B3CAC15D32FE2D36C270887DF9479C25C640');
 
 // create a new transaction
-litecoin.createNewTransaction(100, 'yin-fadfasdgsafgfgasf', 'yan-asdgfgafgsgergrtg');
+litecoin.createNewTransaction(100, 'OMAR9C30AB8E0831B70EA469FBD9BB71B77F689F', 'ILIAS13456D810F99152A44821B8F40ACE191B4F');
 
 // mine a block, where the pending transactions should go
-litecoin.createNewBlock(1236, 'fasdgafgaegeag', 'fadfasdgagsdggas');
+litecoin.createNewBlock(1236, '6E71B3CAC15D32FE2D36C270887DF9479C25C640', '182F44B755488FE4B6A8F6F55A537C0ABD4401EC');
 
-litecoin.createNewTransaction(100, 'yin-fadfasdgsafgfgasf', 'yan-asdgfgafgsgergrtg');
-litecoin.createNewTransaction(200, 'yin-fadfasdgsafgfgasf', 'yan-asdgfgafgsgergrtg');
-litecoin.createNewTransaction(300, 'yin-fadfasdgsafgfgasf', 'yan-asdgfgafgsgergrtg');
+litecoin.createNewTransaction(100, 'OMAR9C30AB8E0831B70EA469FBD9BB71B77F689F', '6E71B3CAC15D32FE2D36C270887DF9479C25C640');
+litecoin.createNewTransaction(200, '6E71B3CAC15D32FE2D36C270887DF9479C25C640', '182F44B755488FE4B6A8F6F55A537C0ABD4401EC');
+litecoin.createNewTransaction(300, '6E71B3CAC15D32FE2D36C270887DF9479C25C640', '182F44B755488FE4B6A8F6F55A537C0ABD4401EC');
 
-litecoin.createNewBlock(1237, 'fasdgafgaegeag', 'fadfasdgagsdggas');
+litecoin.createNewBlock(1237, '182F44B755488FE4B6A8F6F55A537C0ABD4401EC', '1E2D808D66034DBE6236476C56E92595DCDD522B');
+
 
 // log chain
 console.log(litecoin.chain[2]);
