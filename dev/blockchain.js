@@ -1,11 +1,17 @@
 const sha256 = require('sha256');
+const currentNodeURL = process.argv[3];
 
 function Blockchain() {
     this.chain = [];
     this.pendingTransactions = [];
+    this.currentNodeURL = currentNodeURL;
+    this.networkNodes = [];
+    // create the genesis block
+    // it's fine to pass arbitrary values, ONLY for the first block
+    this.createNewBlock(100, '0', '0');
 }
 
-Blockchain.prototype.createNewBlock = function(nonce, previousBlockHash, hash) {
+Blockchain.prototype.createNewBlock = function (nonce, previousBlockHash, hash) {
     // the new block to create
     const newBlock = {
         index: this.chain.length + 1,
@@ -26,11 +32,11 @@ Blockchain.prototype.createNewBlock = function(nonce, previousBlockHash, hash) {
 };
 
 
-Blockchain.prototype.getLastBlock = function() {
+Blockchain.prototype.getLastBlock = function () {
     return this.chain[this.chain.length - 1];
 };
 
-Blockchain.prototype.createNewTransaction = function(amount, sender, recepient) {
+Blockchain.prototype.createNewTransaction = function (amount, sender, recepient) {
     // new transaction to be created
     const newTransaction = {
         amount: amount,
@@ -46,16 +52,27 @@ Blockchain.prototype.createNewTransaction = function(amount, sender, recepient) 
 };
 
 // function to hash the blocks
-Blockchain.prototype.hashBlock = function(previousBlockHash, currentBlockData, nonce) {
+Blockchain.prototype.hashBlock = function (previousBlockHash, currentBlockData, nonce) {
     const dataToString = previousBlockHash + nonce.toString() + JSON.stringify(currentBlockData);
     const hash = sha256(dataToString);
     return hash;
 };
 
-Blockchain.prototype.proofOfWord = function(previousBlockHash, currentBlockData) {
+Blockchain.prototype.proofOfWork = function (previousBlockHash, currentBlockData) {
     // we want to make that every block added is legit
     // every time a block is created we need to prove that it's a legit block
     // that's what this method is about
+    let nonce = 0;
+    let hash = this.hashBlock(previousBlockHash, currentBlockData, nonce);
+    // loop until hash starts with 4 zeros
+    while (hash.substring(0, 4) != '0000') {
+        nonce++;
+        hash = this.hashBlock(previousBlockHash, currentBlockData, nonce);
+    }
+
+    // console.log(hash);
+    // return the nonce value that gives the needed hash
+    return nonce;
 };
 
 module.exports = Blockchain;
