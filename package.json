@@ -4,18 +4,31 @@
   "description": "My first blockchain in JavaScript",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "echo error: no test specified && exit 1",
+    "node_1": "nodemon --watch dev -e js dev/network-node.js 3001 http://localhost:3001",
+    "node_2": "nodemon --watch dev -e js dev/network-node.js 3002 http://localhost:3002",
+    "node_3": "nodemon --watch dev -e js dev/network-node.js 3003 http://localhost:3003",
+    "node_4": "nodemon --watch dev -e js dev/network-node.js 3004 http://localhost:3004",
+    "node_5": "nodemon --watch dev -e js dev/network-node.js 3005 http://localhost:3005"
   },
   "keywords": [
     "blockchain",
     "bitcoin",
     "cryptocurrency",
-    "javascript"
+    "javascript",
+    "nodejs"
   ],
   "author": "Omar Ilias EL MIMOUNI",
-  "license": "UNLICENSED",
+  "repository": "https://github.com/elmiomar/blochjs.git",
+  "license": "ISC",
   "dependencies": {
-    "sha256": "^0.2.0"
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "nodemon": "^1.17.5",
+    "request": "^2.87.0",
+    "request-promise": "^4.2.2",
+    "sha256": "^0.2.0",
+    "uuid": "^3.3.2"
   },
   "jshintConfig": {
     "esversion": 6
