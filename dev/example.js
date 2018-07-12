@@ -3,7 +3,7 @@ const Blockchain = require('./blockchain');
 const somecoin = new Blockchain();
 
 // choose which example to run
-let example = 0;
+let example = 3;
 console.log(`running example #${example}...`);
 
 if (example == 0) {
@@ -56,4 +56,10 @@ if (example == 2) {
     let nonce = somecoin.proofOfWork(previousBlockHash, currentBlockData);
     // console.log(`found it after ${nonce} tries.`);
     console.log(somecoin.hashBlock(previousBlockHash, currentBlockData, nonce));
+}
+
+
+if (example == 3) {
+    var bch = require('./test/mock-chain.json');
+    console.log('Is chain valid? ' + somecoin.chainIsValid(bch.chain));
 }
