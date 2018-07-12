@@ -133,16 +133,13 @@ app.get("/mine", function(req, res) {
     nonce
   );
 
-  // create a new transaction to reward the miner for successfully mining a new block
-  somecoin.createNewTransaction(15, "00", nodeAddress);
-
   // create a new block in the chain
   const newBlock = somecoin.createNewBlock(nonce, previousBlockHash, blockHash);
 
   const requestPromises = [];
   somecoin.networkNodes.forEach(function(networkNodeURL) {
     const requestOptions = {
-      uri: networkNodeURL + "/register-new-block",
+      uri: networkNodeURL + "/receive-new-block",
       method: "POST",
       body: { newBlock: newBlock },
       json: true
