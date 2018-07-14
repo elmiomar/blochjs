@@ -274,7 +274,7 @@ app.get('/address/:address', function(req ,res) {
 });
 
 app.get('/explorer', function(req ,res) {
-  res.sendfile('./client/index.html', {root: __dirname});
+  res.sendFile('./client/index.html', {root: __dirname});
 });
 
 // start server
