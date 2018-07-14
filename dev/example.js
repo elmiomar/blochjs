@@ -5,7 +5,7 @@ const somecoin = new Blockchain();
 // choose which example to run
 let example = 3;
 
-if (process.argv[2]) example = process.argv[2]
+if (process.argv[2]) example = process.argv[2];
 
 console.log(`running example #${example}...`);
 

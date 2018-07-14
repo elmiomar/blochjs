@@ -66,7 +66,7 @@ app.post("/register-node", function(req, res) {
   res.json({ message: "new node registered successfully" });
 });
 
-// this endpoint registers multiple nodes at once
+// register multiple nodes at once
 app.post("/register-nodes-bulk", function(req, res) {
   const allNetworkNodes = req.body.allNetworkNodes;
   allNetworkNodes.forEach(function(networkNodeURL) {
@@ -78,10 +78,12 @@ app.post("/register-nodes-bulk", function(req, res) {
   res.json({ message: "bulk of nodes registred successfully" });
 });
 
+// return the local blockchain
 app.get("/blockchain", function(req, res) {
   res.send(somecoin);
 });
 
+// add transaction to pending transactions
 app.post("/transaction", function(req, res) {
   const transaction = req.body.newTransaction;
   const blockIndex = somecoin.addTransactionToPendingTransactions(transaction);
@@ -89,6 +91,7 @@ app.post("/transaction", function(req, res) {
   res.json({ message: `transaction will be added to block ${blockIndex}` });
 });
 
+// add a transaction to pending transactions and broadcasts it to the whole network
 app.post("/transaction/broadcast", function(req, res) {
   let amount = req.body.amount;
   let sender = req.body.sender;
@@ -119,6 +122,7 @@ app.post("/transaction/broadcast", function(req, res) {
   });
 });
 
+// mine a new block
 app.get("/mine", function(req, res) {
   const lastBlock = somecoin.getLastBlock();
   const previousBlockHash = lastBlock.hash;
@@ -133,7 +137,7 @@ app.get("/mine", function(req, res) {
     nonce
   );
 
-  // create a new block in the chain
+  // create a new block in the chain and add a reward transaction
   const newBlock = somecoin.createNewBlock(nonce, previousBlockHash, blockHash);
 
   const requestPromises = [];
@@ -170,6 +174,8 @@ app.get("/mine", function(req, res) {
     });
 });
 
+// receive new block and validate it
+// return response
 app.post("/receive-new-block", function(req, res) {
   const newBlock = req.body.newBlock;
   const lastBlock = somecoin.getLastBlock();
@@ -188,12 +194,90 @@ app.post("/receive-new-block", function(req, res) {
   } else {
     // send back negative response
     res.json({
-      message: "new block received and rejected",
+      message: "new block received but rejected",
       newBlock: newBlock
     });
   }
 });
 
+
+// look up the most updated blockchain in the network
+app.get("/consensus", function(req, res) {
+  const requestPromises = [];
+  somecoin.networkNodes.forEach(function(networkNodeURL) {
+    const requestOptions = {
+      uri: networkNodeURL + "/blockchain",
+      method: "GET",
+      json: true
+    };
+    requestPromises.push(requestPromise(requestOptions));
+  });
+
+  Promise.all(requestPromises).then(function(blockchains) {
+    const currentChainLength = somecoin.chain.length;
+    let maxChainLength = currentChainLength;
+    let newLongestChain = null;
+    let newPendingTransactions = null;
+
+    blockchains.forEach(function(blockchain) {
+      console.log("length " + blockchain.chain.length);
+      if (blockchain.chain.length > maxChainLength) {
+        maxChainLength = blockchain.chain.length;
+        newLongestChain = blockchain.chain;
+        newPendingTransactions = blockchain.pendingTransactions;
+      }
+    });
+
+    if (!newLongestChain || (newLongestChain && !somecoin.chainIsValid(newLongestChain))) {
+      res.json({
+        message: "current chain has not been replaced",
+        chain: somecoin.chain
+      });
+    } else {
+      somecoin.chain = newLongestChain;
+      somecoin.pendingTransactions = newPendingTransactions;
+      res.json({
+        message: "current chain has been replaced",
+        chain: somecoin.chain
+      });
+    }
+  });
+});
+
+app.get('/block/:blockHash', function(req ,res) {
+  const blockHash = req.params.blockHash;
+  const correctBlock = somecoin.getBlock(blockHash);
+  res.json({
+    block: correctBlock
+  });
+});
+
+
+app.get('/transaction/:transactionId', function(req ,res) {
+  const transactionId = req.params.transactionId;
+  const transactionData = somecoin.getTransaction(transactionId);
+
+  res.json({
+    transaction: transactionData.transaction,
+    block: transactionData.block
+  });
+});
+
+app.get('/address/:address', function(req ,res) {
+  const address = req.params.address;
+  const addressData = somecoin.getAddressData(address);
+
+  res.json({
+    transactions: addressData.transactions,
+    balance: addressData.balance
+  });
+});
+
+app.get('/explorer', function(req ,res) {
+  res.sendfile('./client/index.html', {root: __dirname});
+});
+
+// start server
 app.listen(port, function() {
   console.log(`Listening on port ${port}...`);
 });
